@@ -1,22 +1,25 @@
-import { Injectable } from '@nestjs/common';
-import { UserRepository } from './user.repository';
+import { Injectable, NotFoundException } from '@nestjs/common';
+//import { UserRepository } from './user.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(UserRepository)
-    private userRepository: UserRepository,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    // @InjectRepository(UserRepository)
+    // private userRepository: UserRepository,
   ) {}
 
-  // async getTaskById(id: number): Promise<User> {
-  //   const result = await this.userRepository.findOne(id);
-  //   if (!result) {
-  //     throw new NotFoundException(`User ${id} Not Found`);
-  //   }
-  //   return result;
-  // }
+  async getTaskById(id: number): Promise<User> {
+    const result = await this.userRepository.findOne({ where: { id } });
+    if (!result) {
+      throw new NotFoundException(`User ${id} Not Found`);
+    }
+    return result;
+  }
   // getAllUsers(): User[] {
   //   return this.users;
   // }
